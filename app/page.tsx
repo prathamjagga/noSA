@@ -11,6 +11,7 @@ export default function Home() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -22,6 +23,7 @@ export default function Home() {
   }, [router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
+    setIsLoading(true);
     e.preventDefault();
     setError("");
 
@@ -47,15 +49,17 @@ export default function Home() {
       }
     } catch (err: any) {
       setError(err.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="glass-morphism rounded-3xl p-8 w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center p-4 netflix-gradient">
+      <div className="netflix-card p-8 w-full max-w-md">
         <div className="flex flex-col items-center mb-8">
-          <MessageSquare className="w-12 h-12 text-white mb-4" />
-          <h1 className="text-2xl font-semibold text-white">
+          <MessageSquare className="w-12 h-12 text-netflix-red mb-4" />
+          <h1 className="text-3xl font-bold text-white mb-2">
             {isLogin ? "Welcome Back" : "Create Account"}
           </h1>
         </div>
@@ -66,28 +70,40 @@ export default function Home() {
             placeholder="Username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            className="bg-white/20 border-0 text-white placeholder:text-white/60"
+            className="netflix-input"
           />
           <Input
             type="password"
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="bg-white/20 border-0 text-white placeholder:text-white/60"
+            className="netflix-input"
           />
 
-          {error && <p className="text-red-300 text-sm text-center">{error}</p>}
+          {error && (
+            <p className="text-netflix-red text-sm text-center">{error}</p>
+          )}
 
-          <Button type="submit" className="w-full ios-btn text-white">
-            {isLogin ? "Sign In" : "Sign Up"}
+          <Button
+            type="submit"
+            className="netflix-btn w-full h-12 text-lg font-medium"
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <div className="netflix-loader mx-auto"></div>
+            ) : isLogin ? (
+              "Sign In"
+            ) : (
+              "Sign Up"
+            )}
           </Button>
 
-          <p className="text-center text-white/80 text-sm">
+          <p className="text-center text-gray-400 text-sm">
             {isLogin ? "Don't have an account? " : "Already have an account? "}
             <button
               type="button"
               onClick={() => setIsLogin(!isLogin)}
-              className="text-white underline"
+              className="text-netflix-red hover:underline"
             >
               {isLogin ? "Sign Up" : "Sign In"}
             </button>
